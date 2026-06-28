@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  </head>
+
+  <title>BrainBlaze</title>
+
+  <body id="BHomepage">
+<header class="header">
+      <a href="/">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='Img/Logo.svg')}}" alt="BrainBlaze"/>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <div class="menu-Produtos">
+          <a href="{{ url_for('Produtos')}}" class="menu-link-Produtos">Produtos</a>
+          <div class="produtos-preview-ui">
+            <div class="ScrollPosition">
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Performance mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Energia máxima</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta produtividade</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Foco extremo</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Aprendizado rápido</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Disciplina mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta performance</h1></div>
+                <div class="play">▶</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="{{ url_for('SobreNos')}}">Sobre nós</a>
+        <a href="{{ url_for('Contactos')}}">Contactos</a>
+      </nav>
+
+      <div class="icons">
+        <a href="{{ url_for('Carrinho')}}">
+          <img src="{{ url_for('static', filename='Img/cartshoping.png') }}" class="Shopping" alt="Carrinho"/>
+        </a>
+
+        {% if session.get('user_id') %}
+          <div class="user-dropdown-container">
+            <a href="{{ url_for('Perfil')}}">
+            <img src="{{ url_for('static', filename='Img/Users.png') }}" class="User" alt="Perfil" />
+            </a>
+            <div class="group21-dropdown">
+              <div class="g21-section" style="margin-bottom: 25px;">
+                <div class="g21-title">FAVORITOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="fav-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if global_favoritos %}
+                      {% for fav in global_favoritos %}
+                        <div class="product-favorite-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            {% if fav.imagem_id %}
+                              <img src="/exibir_imagem/{{ fav.imagem_id }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ fav.nome }}">
+                            {% else %}
+                              <img src="{{ url_for('static', filename='Img/Logo.svg') }}" style="width: 50px; height: auto;">
+                            {% endif %}
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ fav.nome }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(fav.preco) }}€
+                          </span>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não tens favoritos.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-section">
+                <div class="g21-title">PRODUTOS COMPRADOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="compras-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if compras %}
+                      {% for compra in compras %}
+                        <div class="product-purchase-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="BrainBlaze" style="width: 50px; height: auto;">
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            Pedido #{{ compra.id }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(compra.total) }}€
+                          </span>
+                          <div style="font-size: 9px; color: #00e673; font-weight: bold; margin-top: 4px; text-transform: uppercase;">
+                            ✓ {{ compra.estado }}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não efetuaste nenhuma compra.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-footer" style="margin-top: 15px;">
+                <a href="/Logout" class="g21-btn-sair">Sair</a>
+              </div>
+            </div>
+
+            <script>
+            function scrollCarrossel(idGrupo, direcao) {
+              const container = document.getElementById(idGrupo);
+              const valorScroll = 175; 
+              container.scrollLeft += (direcao * valorScroll);
+            }
+            </script>
+
+        {% else %}
+          <a href="{{ url_for('Login')}}">
+            <img src="{{ url_for('static', filename='Img/addWhite.png') }}" class="User" alt="Login" />
+          </a>
+        {% endif %}
+      </div>
+</header>
+
+<section class="CTA" id="cta" style="position: relative; min-height: 450px; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; transition: background-image 0.5s ease; padding: 40px;">
+  
+  <!-- CONTEÚDO DINÂMICO (Isolado para não empurrar as setas) -->
+  <div id="cta-content" style="text-align: center; max-width: 600px; z-index: 2; font-family: 'Inter', sans-serif; background: rgba(0, 0, 0, 0.6); padding: 35px; border-radius: 16px; border: 1px solid #333; backdrop-filter: blur(5px); margin-bottom: 40px;">
+    <h1 id="cta-title" style="font-family: 'Archivo Black', sans-serif; font-size: 32px; color: #FF9D00; text-transform: uppercase; margin: 0 0 12px 0; letter-spacing: 1px;"></h1>
+    <p id="cta-text" style="font-size: 15px; color: #e0e0e0; margin: 0 0 20px 0; line-height: 1.6;"></p>
+    <a id="cta-btn" href="/Produtos" style="display: inline-block; font-family: 'Archivo Black', sans-serif; font-size: 13px; color: #000; background: #FF9D00; padding: 12px 35px; border-radius: 8px; text-transform: uppercase; text-decoration: none; font-weight: bold; transition: transform 0.2s;">
+      Ver Produtos
+    </a>
+  </div>
+
+  <!-- CONTROLOS ORIGINAIS (Preservando as tuas classes CSS originais) -->
+  <div class="CTAPOS">
+    <div class="TriangleAdjust">
+      <button class="btn left" id="prev">
+        <span class="triangle"></span>
+      </button>
+
+      <button class="btn right" id="next">
+        <span class="triangle"></span>
+      </button>
+    </div>
+
+    <div class="Balls">
+      <input type="radio" id="Balls1" name="Change" checked data-index="0">
+      <label for="Balls1"></label>
+
+      <input type="radio" id="Balls2" name="Change" data-index="1">
+      <label for="Balls2"></label>
+
+      <input type="radio" id="Balls3" name="Change" data-index="2">
+      <label for="Balls3"></label>
+
+      <input type="radio" id="Balls4" name="Change" data-index="3">
+      <label for="Balls4"></label>
+    </div>
+  </div>
+
+</section>
+    </section>
+      <section class="SaberMais">
+        <div>
+          <nav class="Mais">
+            <a href="{{ url_for('Produtos')}}" >« Saber Mais »</a>
+          </nav>
+        </div>
+      </section>
+      <section class="Produtos">
+        <div class="ProdutosOnLine">
+          <div class="Border">
+            <img src="{{url_for('static', filename='Img/MentalFocus.svg')}}">
+          </div>
+
+          <div class="DescriptionProdutos">
+            <nav class="navs">
+              <a href="{{ url_for('Produtos')}}" class="TitleMental">Mental Focus</a>
+            </nav>
+
+            <p class="DescriptionMental">
+              Por apenas 10€, adquira as cápsulas Mental Focus da Bigen e recupere o seu foco de forma rápida e eficaz.  
+              Não perca esta oportunidade!
+            </p>
+          </div>
+        </div>
+        <div class="ProdutosOnLine">
+          <div class="Border">
+          
+          <img src="{{url_for('static', filename='Img/NeuroBrain.svg')}}">
+        </div>
+        
+        <div class="DescriptionProdutos">
+
+            <nav class="navs">
+              <a href="{{ url_for('Produtos')}}" class="TitleBrain">Neuro Brain</a>
+            </nav>
+
+            <p class="DescriptionBrain">
+              Por apenas 12€, Neuro Brain ajuda a aumentar o foco, a concentração e a velocidade de raciocínio, ideal para estudar, trabalhar ou jogar ao mais alto nível.
+            </p>
+          </div>
+        </div>
+
+        <div class="ProdutosOnLine">
+        <div class="Border">
+          <img src="{{url_for('static', filename='Img/BrainCalm.svg')}}">
+        </div>
+
+        <div class="DescriptionProdutos">
+
+            <nav class="navs">
+              <a href="{{ url_for('Produtos')}}" class="TitleCalm">Brain Calm</a>
+            </nav>
+
+            <p class="DescriptionCalm">
+              Por apenas 5€, Brain Calm ajuda a reduzir o stress e a ansiedade, contribuindo para um sono mais tranquilo e um dia a dia mais equilibrado.
+            </p>
+          </div>
+        </section>
+
+        <section class="STONKSCTA">
+          <div class="BGCTA">
+              <nav class="MaxBorder">
+                <a href="{{ url_for('Produtos')}}" class="TitleMax">Maximize seu potencial já!</a>
+              </nav>
+              
+              <nav class="MaxBorderMobile">
+                <a href="{{ url_for('Produtos')}}" class="TitleMax">Maximize!</a>
+              </nav>
+
+          </div>
+        </section>
+
+        <section class="CheckHealthy">
+          <div class="CheckHealthyTitle">
+            <h1 class="HealthySize">Check Healthy</h1>
+          </div>
+
+          <div class="Game"></div>
+
+          <nav class="HelpButton">
+            <a class="HelpStyle" href="url_for('Contactos')">Preciso de ajuda?</a>
+          </nav>
+
+          </section>
+
+          <section class="BBCTA">
+            <div class="BBAdjust">
+              <div class="CTATextAdjust">
+                <h1 class="T1">Easy to swallow capsules.</h1>
+                <h1 class="T2">No weird aftertaste.</h1>
+                <h1 class="T3">More convenient than powder.</h1>
+              </div>
+
+              <nav class="Buy">
+                <a href="{{ url_for('Produtos')}}" class="BuyButton">Buy Now!</a>
+              </nav>
+
+            </div>
+          </section>
+
+                  <section class="Info">
+          <div class="InfoAdjust1">
+            <div class="ProductBorderDes1">
+              <img src="{{ url_for('static', filename='Img/AtivadorCerebral.svg') }}" alt="Ativador Cerebral">
+            </div>
+
+            <div class="ProductAdjust1">
+              <p class="Titulo1">Potencie Seu Cérebro com Ativador Cerebral!</p>
+              <p class="desc1">
+                Comece seu dia com mais foco e energia com o Ativador Cerebral. Esse suplemento foi desenvolvido para estimular as funções cognitivas, melhorar a concentração e favorecer a memória, sendo ideal para quem enfrenta rotinas exigentes no trabalho, estudo ou até em jogos intensos. Sinta seu cérebro ativo, apto para decisões rápidas e pensamentos mais claros.
+              </p>
+              <p class="desc1">
+                Além do Ativador Cerebral, BrainBlaze oferece opções para relaxamento e recuperação mental. Nossos produtos são formulados com ingredientes naturais que ajudam a combater o estresse e a ansiedade, promovendo saúde mental para você se sentir bem durante todo o dia.
+              </p>
+
+              <nav class="Position">
+                <a href="{{ url_for('Produtos') }}" class="Check">Ver o produto</a>
+              </nav>
+            </div>
+          </div>
+
+          <div class="InfoAdjust2">
+            <div class="ProductBorderDes2">
+              <img src="{{ url_for('static', filename='Img/BrainUp.svg') }}" id="SpecialTreatment" alt="Brain Up Nootropic 8 Hours">
+            </div>
+
+            <div class="ProductAdjust2">
+              <p class="Titulo2">Dê ao Seu Cérebro 8 Horas de Alta Performance!</p>
+
+              <p class="desc2">
+                Experimente Brain Up Nootropic 8 Hours, o suplemento ideal para quem precisa de foco, memória e energia por muito mais tempo. Sua fórmula inovadora oferece suporte cognitivo prolongado, ajudando você a manter concentração, clareza mental e resistência durante estudos, trabalho intenso ou sessões extensas de gaming. Sinta seu cérebro em pleno desempenho por até 8 horas seguidas!
+              </p>
+
+              <p class="desc2">
+                Apoie sua saúde mental e conquiste melhores resultados sem abrir mão do relaxamento. Brain Up equilibra ingredientes que promovem produtividade, criatividade e bem-estar, reduzindo o cansaço e facilitando a recuperação mental.
+              </p>
+
+              <nav class="Position">
+                <a href="{{ url_for('Produtos') }}" class="Check">Ver o produto</a>
+              </nav>
+            </div>
+          </div>
+        </section>
+
+      <div class="SMALLSIZE">
+        <h1 class="SMALLSIZETEXT">A DIMENSÃO DO SEU DESPOSITIVO E MENOR DO SUPOSTO</h1>
+      </div>
+
+     <footer class="footer">
+  <div class="footer-top">
+    <h1 class="footer-brand">BrainBlaze</h1>
+
+    <div class="footer-socials">
+      <a href="mailto:BrainBlazeshop@gmail.com" class="social-link">
+        <img src="{{ url_for('static', filename='Img/gmail.svg') }}" alt="Email">
+      </a>
+
+      <a href="https://www.tiktok.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/TikTokLogo.svg') }}" alt="TikTok">
+      </a>
+
+      <a href="https://www.instagram.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/InstagramLogo.svg') }}" alt="Instagram">
+      </a>
+
+      <a href="https://www.linkedin.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/LinkedinLogo.svg') }}" alt="LinkedIn">
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-line"></div>
+
+  <div class="footer-content">
+    <div class="footer-column footer-left">
+      <p>Rua Andrade Corvo nº30 1050-009 Lisboa</p>
+      <p class="footer-phone">+351 963 262 639</p>
+      <p>(Custo de chamada local)</p>
+    </div>
+
+    <div class="footer-column footer-center">
+      <a href="{{ url_for('PoliticaPrivacidade') }}" class="footer-link">Política de Privacidade</a>
+      <a href="{{ url_for('LivroReclamacoes') }}" class="footer-link">Livro de reclamações</a>
+      <a href="{{ url_for('TermosEservicos') }}" class="footer-link">Termos e condições</a>
+      <p class="footer-copyright">© 2026 www.brainblaze.pt - All Rights Reserved.</p>
+    </div>
+
+    <div class="footer-column footer-right">
+      <h2>Ser informado sobre nossos produtos</h2>
+
+      <form id="newsletter-form" class="footer-newsletter">
+        <input type="email" id="newsletter-email" placeholder="O seu email..." required>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+  </body>
+</html>

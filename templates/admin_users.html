@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerir Utilizadores - BrainBlaze</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body id="BHPanel">
+
+    <header id="HDPanel">
+        <a href="/">
+            <img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="Logo">
+        </a>
+        <h1>Painel Admin - Gestão de Utilizadores</h1>
+        <a class="logout" href="/Logout">
+            <img src="{{ url_for('static', filename='Img/LEAVE.svg') }}" alt="Sair">
+        </a>
+    </header>
+
+    <main class="admin-container">
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <div class="PanelAdminBorder">
+                <a href="/Panel/Users" class="PanelButton active">Utilizadores</a>
+                <a href="/Panel/Produtos" class="PanelButton">Produtos</a>
+                <a href="/Panel/Encomendas" class="PanelButton">Encomendas</a>
+                <a href="/Panel" class="PanelButton" style="margin-top: 20px; background-color: #444;">← Voltar ao Dashboard</a>
+            </div>
+        </aside>
+
+        <section class="dashboard-grid-layout" style="display: block; padding: 20px;">
+            
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                  {{ messages[0] }}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <div class="grid-card recent-orders-table-card" style="width: 100%;">
+                <h3>Lista de Utilizadores Registados</h3>
+                <div class="table-responsive">
+                    <table class="admin-table" style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid #444;">
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr style="border-bottom: 1px solid #333; height: 60px;">
+                                <td>#{{ user.id }}</td>
+                                <td><strong>{{ user.username if user.username else user.nome }}</strong></td>
+                                
+                                <form action="/Panel/Users/Editar/{{ user.id }}" method="POST" style="display: inline;">
+                                    <td>
+                                        <input type="email" name="email" value="{{ user.email }}" required 
+                                               style="background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 4px; width: 180px;">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="password" value="{{ user.password }}" required 
+                                               style="background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 4px; width: 120px;">
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="badge badge-success" style="background-color: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                                            Guardar
+                                        </button>
+                                </form>
+
+                                        {% if user.username.lower() != 'admin' %}
+                                        <form action="/Panel/Users/Eliminar/{{ user.id }}" method="POST" style="display: inline;" onsubmit="return confirm('Tens a certeza que queres eliminar este utilizador?');">
+                                            <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px;">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

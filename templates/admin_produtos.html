@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Produtos | BrainBlaze</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2 family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body id="BHPanel">
+
+    <header id="HDPanel">
+        <a href="/"><img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="Logo"></a>
+        <h1>Gestão de Stock & Produtos</h1>
+        <a class="logout" href="/Logout"><img src="{{ url_for('static', filename='Img/LEAVE.svg') }}" alt="Sair"></a>
+    </header>
+
+    <main class="admin-container">
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <div class="PanelAdminBorder">
+                <a href="/Panel/Users" class="PanelButton">Utilizadores</a>
+                <a href="/Panel/Produtos" class="PanelButton active">Produtos</a>
+                <a href="/Panel/Encomendas" class="PanelButton">Encomendas</a>
+                <a href="/Panel" class="PanelButton" style="margin-top:20px; background:#444;">← Dashboard</a>
+            </div>
+        </aside>
+
+        <section class="dashboard-grid-layout" style="display:block; padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:white; margin:0;">Artigos em Catálogo</h3>
+                <a href="/Panel/Produtos/Novo" class="dashboard-action-link" style="background:#ff6b00; color:white; padding:10px 20px; border-radius:6px; text-decoration:none; font-weight:bold;">+ Novo Produto</a>
+            </div>
+
+            <div class="grid-card recent-orders-table-card" style="width:100%;">
+                <div class="table-responsive">
+                                    <table class="admin-table" style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="text-align:left; border-bottom:2px solid #444; color:white;">
+                                <th>Visual / Nova Foto</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Preço (€)</th>
+                                <th>Desconto %</th>
+                                <th>Stock</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for produto in produtos %}
+                            <tr style="border-bottom:1px solid #333; height:80px; color:white;">
+                                <form action="/Panel/Produtos/Editar/{{ produto.id }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+                                    <td>
+                                        <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                                            {% if produto.imagem_id %}
+                                            <img src="/exibir_imagem/{{ produto.imagem_id }}" style="width:45px; height:45px; object-fit:cover; border-radius:4px;">
+                                            {% else %}
+                                            <div style="width:45px; height:45px; background:#333; border-radius:4px;"></div>
+                                            {% endif %}
+                                            <input type="file" name="nova_imagem" accept="image/*" style="font-size: 10px; width: 120px;">
+                                        </div>
+                                    </td>
+                                    
+                                    <td><input type="text" name="nome" value="{{ produto.nome }}" required style="background:#222; color:white; border:1px solid #444; padding:5px; border-radius:4px; width:130px;"></td>
+                                    
+                                    <td>
+                                        <select name="categoria_id" style="background:#222; color:white; border:1px solid #444; padding:5px; border-radius:4px;">
+                                            <option value="">Nenhuma</option>
+                                            {% for id_categoria, nome_categoria in categorias.items() %}
+                                                <option value="{{ id_categoria }}" {% if produto.categoria_id == id_categoria %}selected{% endif %}>
+                                                    {{ nome_categoria }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+
+                                    <td><input type="number" step="0.01" name="preco" value="{{ produto.preco }}" required style="background:#222; color:white; border:1px solid #444; padding:5px; border-radius:4px; width:70px;"></td>
+                                    <td>
+    <input type="number" name="desconto" value="{{ produto.desconto }}" min="0" max="99" style="background:#222; color:white; border:1px solid #444; padding:5px; border-radius:4px; width:60px;"></td>
+                                    <td><input type="number" name="stock" value="{{ produto.stock }}" required style="background:#222; color:white; border:1px solid #444; padding:5px; border-radius:4px; width:60px;"></td>
+                                    <td>
+                                        <button type="submit" style="background:#28a745; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold;">Atualizar</button>
+                                </form>
+                                        <form action="/Panel/Produtos/Eliminar/{{ produto.id }}" method="POST" style="display:inline;" onsubmit="return confirm('Apagar este artigo definitivamente?');">
+                                            <button type="submit" style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold; margin-left:5px;">Deletar</button>
+                                        </form>
+                                    </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="7" style="text-align:center; padding:20px; color:#666;">Nenhum produto em base de dados.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

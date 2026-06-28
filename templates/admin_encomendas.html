@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Encomendas | BrainBlaze</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body id="BHPanel">
+
+    <header id="HDPanel">
+        <a href="/"><img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="Logo"></a>
+        <h1>Gestão de Encomendas Recebidas</h1>
+        <a class="logout" href="/Logout"><img src="{{ url_for('static', filename='Img/LEAVE.svg') }}" alt="Sair"></a>
+    </header>
+
+    <main class="admin-container">
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <div class="PanelAdminBorder">
+                <a href="/Panel/Users" class="PanelButton">Utilizadores</a>
+                <a href="/Panel/Produtos" class="PanelButton">Produtos</a>
+                <a href="/Panel/Encomendas" class="PanelButton active">Encomendas</a>
+                <a href="/Panel" class="PanelButton" style="margin-top:20px; background:#444;">← Dashboard</a>
+            </div>
+        </aside>
+
+        <section class="dashboard-grid-layout" style="display:block; padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:white; margin:0;">Pedidos em Sistema</h3>
+            </div>
+
+            <div class="grid-card recent-orders-table-card" style="width:100%;">
+                <div class="table-responsive">
+                    <table class="admin-table" style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="text-align:left; border-bottom:2px solid #444; color:white;">
+                                <th>ID</th>
+                                <th>Utilizador / Cliente</th>
+                                <th>Data do Pedido</th>
+                                <th>Total Módulo</th>
+                                <th>Estado</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enc in encomendas %}
+                            <tr style="border-bottom:1px solid #333; height:60px; color:white;">
+                                <td style="font-weight: bold; color: #ff6b00;">#{{ enc.id }}</td>
+                                <td>{{ enc.cliente }}</td>
+                                <td>{{ enc.data.strftime('%d/%m/%Y %H:%M') if enc.data else 'N/A' }}</td>
+                                <td style="font-weight: bold; color:#28a745;">{{ "%.2f"|format(enc.total) }}€</td>
+                                <td>
+                                    <span style="background:#ff6b00; color:white; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; text-transform:uppercase;">
+                                        {{ enc.estado }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <form action="/admin/encomenda/{{ enc.id }}/concluir" method="POST" style="display:inline;">
+                                        <button type="submit" style="background:#28a745; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold;">
+                                            Concluir
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding:20px; color:#666;">
+                                    Nenhuma encomenda processada até ao momento.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - BrainBlaze</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body id="BHPanel">
+
+    <header id="HDPanel">
+        <a href="/">
+            <img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="Logo">
+        </a>
+        <h1>Painel Admin</h1>
+        <a class="logout" href="/Logout">
+            <img src="{{ url_for('static', filename='Img/LEAVE.svg') }}" alt="Sair">
+        </a>
+    </header>
+
+    <main class="admin-container">
+
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <div class="PanelAdminBorder">
+                <a href="/Panel/Users" class="PanelButton">Utilizadores</a>
+                <a href="/Panel/Produtos" class="PanelButton">Produtos</a>
+                <a href="/Panel/Encomendas" class="PanelButton">Encomendas</a>
+            </div>
+        </aside>
+
+        <section class="dashboard-grid-layout">
+
+            <div class="grid-card top-recent-users">
+                <h3>Clientes Recentes</h3>
+                <div class="mini-avatar-list">
+                    {% for cliente in clientes_recentes %}
+                    <div class="avatar-item">
+                        <span class="avatar-placeholder">
+                            {{ cliente.username[:2].upper() if cliente.username else "US" }}
+                        </span>
+                        <p>{{ cliente.username }}</p>
+                    </div>
+                    {% else %}
+                    <p style="color: #777; font-size: 13px;">Nenhum cliente registado.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="grid-card top-weekly-sales">
+                <h3>Vendas Semanais</h3>
+                <p class="top-card-main-value">{{ "{:,.2f}".format(vendas_semanais) }}€</p>
+                <span class="trend-indicator up">+12.5% vs semana passada</span>
+            </div>
+
+            <div class="grid-card top-store-overview">
+                <h3>Visão da Loja</h3>
+                <p class="store-overview-text">Total de Produtos: <strong>{{ total_produtos }}</strong></p>
+                <a href="/Panel/Produtos/Novo" class="dashboard-action-link">+ Adicionar Produto</a>
+            </div>
+
+            <div class="grid-card main-orange-stats-card">
+                <span class="card-tag">Hoje</span>
+                <h2>Faturação de Hoje</h2>
+                <p class="huge-price-display">{{ "{:,.2f}".format(faturacao_hoje) }}€</p>
+                <div class="orange-card-sub-grid">
+                    <div><span>Encomendas</span><strong>{{ total_encomendas }}</strong></div>
+                    <div><span>Novos Users</span><strong>{{ total_users }}</strong></div>
+                </div>
+            </div>
+
+            <div class="grid-card mini-vertical-card accent-blue">
+                <span class="vertical-tag">Online</span>
+                <h3>Usuários Agora</h3>
+                <p class="vertical-big-number">12</p>
+                <span class="vertical-sub">Últimos 30 min: 96</span>
+            </div>
+
+            <div class="grid-card mini-vertical-card accent-purple">
+                <span class="vertical-tag">Stock</span>
+                <h3>Alertas (&lt;3)</h3>
+                <p class="vertical-big-number">{{ alertas_stock }}</p>
+                <span class="vertical-sub">Produtos em falta</span>
+            </div>
+
+            <div class="grid-card historical-chart-card">
+                <h3>Estatísticas de Vendas Históricas</h3>
+                <div class="css-chart-placeholder">
+                    <div class="chart-bars-container">
+                        <div class="bar" style="height: 40%;"><span>Jan</span></div>
+                        <div class="bar" style="height: 65%;"><span>Fev</span></div>
+                        <div class="bar" style="height: 50%;"><span>Mar</span></div>
+                        <div class="bar" style="height: 85%;"><span>Abr</span></div>
+                        <div class="bar highlighted" style="height: 100%;"><span>Mai</span></div>
+                        <div class="bar" style="height: 70%;"><span>Jun</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-card recent-orders-table-card">
+                <h3>Últimas Encomendas</h3>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for encomenda in encomendas %}
+                            <tr>
+                                <td>#{{ encomenda.id }}</td>
+                                <td>{{ encomenda.nome_cliente if encomenda.nome_cliente else "Cliente #" ~ encomenda.user_id }}</td>
+                                <td>{{ "%.2f"|format(encomenda.total) }}€</td>
+                                <td>
+                                    {% if encomenda.estado == 'Pago' %}
+                                        <span class="badge badge-success">Pago</span>
+                                    {% else %}
+                                        <span class="badge badge-warning">{{ encomenda.estado }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #777;">Nenhuma encomenda gerada.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <title>BrainBlaze - Carrinho</title>
+    <style>
+      /* Reset básico para elementos internos colidirem o mínimo possível */
+      .CartGrayBox * {
+        box-sizing: border-box;
+      }
+      
+      /* Listagem de produtos à esquerda */
+      .CartItemsList {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-height: 380px;
+        overflow-y: auto;
+        padding-right: 5px;
+      }
+      
+      .CartItemRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px 20px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      
+      .CartItemLeft {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      .CartItemImg {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
+      
+      .CartItemInfo h4 {
+        font-family: "Archivo Black", sans-serif;
+        font-size: 15px;
+        text-transform: uppercase;
+        margin: 0 0 4px 0;
+        color: #ffffff;
+      }
+      
+      .CartItemInfo span {
+        color: #FF9D00;
+        font-family: "Archivo Black", sans-serif;
+        font-size: 14px;
+      }
+      
+      .RemoveBtn {
+        background: none;
+        border: none;
+        color: #ff4a4a;
+        font-family: "Archivo Black", sans-serif;
+        font-size: 11px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      
+      .RemoveBtn:hover {
+        opacity: 0.8;
+      }
+    </style>
+
+  </head>
+
+  <body id="BCarrinho">
+<header class="header">
+      <a href="/">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='Img/Logo.svg')}}" alt="BrainBlaze"/>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <div class="menu-Produtos">
+          <a href="{{ url_for('Produtos')}}" class="menu-link-Produtos">Produtos</a>
+          <div class="produtos-preview-ui">
+            <div class="ScrollPosition">
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Performance mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Energia máxima</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta produtividade</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Foco extremo</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Aprendizado rápido</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Disciplina mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta performance</h1></div>
+                <div class="play">▶</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="{{ url_for('SobreNos')}}">Sobre nós</a>
+        <a href="{{ url_for('Contactos')}}">Contactos</a>
+      </nav>
+
+      <div class="icons">
+        <a href="{{ url_for('Carrinho')}}">
+          <img src="{{ url_for('static', filename='Img/cartshoping.png') }}" class="Shopping" alt="Carrinho"/>
+        </a>
+
+        {% if session.get('user_id') %}
+          <div class="user-dropdown-container">
+            <a href="{{ url_for('Perfil')}}">
+            <img src="{{ url_for('static', filename='Img/Users.png') }}" class="User" alt="Perfil" />
+            </a>
+            <div class="group21-dropdown">
+              <div class="g21-section" style="margin-bottom: 25px;">
+                <div class="g21-title">FAVORITOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="fav-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if global_favoritos %}
+                      {% for fav in global_favoritos %}
+                        <div class="product-favorite-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            {% if fav.imagem_id %}
+                              <img src="/exibir_imagem/{{ fav.imagem_id }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ fav.nome }}">
+                            {% else %}
+                              <img src="{{ url_for('static', filename='Img/Logo.svg') }}" style="width: 50px; height: auto;">
+                            {% endif %}
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ fav.nome }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(fav.preco) }}€
+                          </span>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não tens favoritos.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-section">
+                <div class="g21-title">PRODUTOS COMPRADOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="compras-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if compras %}
+                      {% for compra in compras %}
+                        <div class="product-purchase-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="BrainBlaze" style="width: 50px; height: auto;">
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            Pedido #{{ compra.id }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(compra.total) }}€
+                          </span>
+                          <div style="font-size: 9px; color: #00e673; font-weight: bold; margin-top: 4px; text-transform: uppercase;">
+                            ✓ {{ compra.estado }}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não efetuaste nenhuma compra.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-footer" style="margin-top: 15px;">
+                <a href="/Logout" class="g21-btn-sair">Sair</a>
+              </div>
+            </div>
+
+            <script>
+            function scrollCarrossel(idGrupo, direcao) {
+              const container = document.getElementById(idGrupo);
+              const valorScroll = 175; 
+              container.scrollLeft += (direcao * valorScroll);
+            }
+            </script>
+
+        {% else %}
+          <a href="{{ url_for('Login')}}">
+            <img src="{{ url_for('static', filename='Img/addWhite.png') }}" class="User" alt="Login" />
+          </a>
+        {% endif %}
+      </div>
+</header>
+
+   <main class="CartMainContainer" style="max-width: 1200px; margin: 120px auto 60px auto; padding: 0 20px;">
+      <div class="CartWrapper" style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
+
+        <div class="CartInternalHeader" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 5px;">
+          <span class="CartTitle" style="font-family: 'Archivo Black', sans-serif; font-size: 16px; text-transform: uppercase; color: #ffffff; margin: 0; line-height: 1;">
+            O meu carrinho: {{ produtos|length if produtos else 0 }} produtos
+          </span>
+          <div class="CartUserStatus" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+            <a href="{{ url_for('Perfil')}}" style="display: flex; align-items: center; justify-content: center;">
+              <img src="{{ url_for('static', filename='Img/Users.png') }}" alt="User Profile" class="InternalUserIcon" style="width: 24px; height: 24px; display: block;"/>
+            </a>
+          </div>
+        </div>
+
+        <div class="CartGrayBox" style="background-color: #333333; border-radius: 12px; padding: 40px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; min-height: 500px; width: 100%;">
+          
+          <div class="CartLeftSection" style="flex: 1.2; display: flex; justify-content: center; align-items: center; height: 100%;">
+            {% if produtos %}
+              <div class="CartItemsList">
+                {% for produto in produtos %}
+                  <div class="CartItemRow">
+                    <div class="CartItemLeft">
+                      {% if produto.imagem_id %}
+                        <img src="/exibir_imagem/{{ produto.imagem_id }}" class="CartItemImg" alt="{{ produto.nome }}">
+                      {% else %}
+                        <img src="{{ url_for('static', filename='Img/Logo.svg') }}" class="CartItemImg" alt="Default">
+                      {% endif %}
+                      <div class="CartItemInfo">
+                        <h4>{{ produto.nome }}</h4>
+                        <span>{{ "%.2f"|format(produto.preco) }}€</span>
+                      </div>
+                    </div>
+                    <form action="/remover_carrinho/{{ produto.id }}" method="POST" style="margin:0;">
+                      <button type="submit" class="RemoveBtn">Remover</button>
+                    </form>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="CartEmptySection" style="border: 1px dashed rgba(255, 255, 255, 0.2); border-radius: 8px; width: 100%; height: 380px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <img src="{{ url_for('static', filename='Img/cartshoping.png') }}" alt="Carrinho Vazio" class="EmptyCartImg" style="width: 65px; height: auto; margin-bottom: 15px;"/>
+                <h3 class="EmptyCartText" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: #ffffff; margin: 0 0 5px 0;">Carrinho Vazio!</h3>
+                <a href="{{ url_for('Produtos') }}" style="text-decoration: none;">
+                  <p class="CallToActionText" style="font-family: 'Archivo Black', sans-serif; font-size: 26px; color: #ffffff; margin: 0;">Vai a compra!</p>
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="CartDivider" style="width: 1px; background-color: rgba(255, 255, 255, 0.2); height: 380px; margin: 0 45px; align-self: center;"></div>
+
+          <div class="CartCheckoutSection" style="flex: 0.8; display: flex; flex-direction: column; justify-content: center;">
+            
+            <div class="CartTotalsDetails" style="display: flex; flex-direction: column; gap: 12px; font-family: 'Inter', sans-serif;">
+              <div class="TotalRow" style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: #ffffff;">
+                <span>Subtotal:</span>
+                <span>{{ "%.2f"|format(subtotal if subtotal else 0.0) }}€</span>
+              </div>
+              <div class="TotalRow" style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: #ffffff;">
+                <span>Custos de envio estimados:</span>
+                <span>{% if envio and envio > 0 %}{{ "%.2f"|format(envio) }}€{% else %}0.00€ (Grátis){% endif %}</span>
+              </div>
+              
+              <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 8px 0;"></div>
+              
+              <div class="TotalRow GrandTotal" style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: #ffffff;">
+                <span>Total:</span>
+                <span>{{ "%.2f"|format(total if total else 0.0) }}€</span>
+              </div>
+              
+              <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 8px 0 25px 0;"></div>
+            </div>
+
+            <form action="{{ url_for('checkout') }}" method="POST" style="width: 100%; margin-bottom: 30px;">
+              <button type="submit" class="CartBtn SubmitBtn" 
+                {% if not produtos %}disabled style="width: 100%; background-color: #7a7a7a; color: #333333; font-family: 'Archivo Black', sans-serif; font-size: 13px; text-transform: uppercase; padding: 14px; border: none; border-radius: 6px; cursor: not-allowed;"
+                {% else %} style="width: 100%; background-color: #9e9e9e; color: #000000; font-family: 'Archivo Black', sans-serif; font-size: 13px; text-transform: uppercase; padding: 14px; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#cccccc'" onmouseout="this.style.backgroundColor='#9e9e9e'"{% endif %}>
+                Comprar
+              </button>
+            </form>
+
+            <div class="PaymentMethods" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; width: 100%;">
+              <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: #ffffff; text-align: center;">Tipo de Pagamento:</span>
+              <div style="display: flex; gap: 12px; align-items: center; justify-content: center;">
+                <img src="{{ url_for('static', filename='Img/visa.png') }}" alt="Visa" style="height: 20px; width: auto; object-fit: contain;">
+                <img src="{{ url_for('static', filename='Img/mastercard.png') }}" alt="Mastercard" style="height: 20px; width: auto; object-fit: contain;">
+                <img src="{{ url_for('static', filename='Img/mbway.png') }}" alt="MBWay" style="height: 20px; width: auto; object-fit: contain;">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <div class="SMALLSIZE">
+      <h1 class="SMALLSIZETEXT">A DIMENSÃO DO SEU DESPOSITIVO É MENOR DO QUE O SUPORTE COMPATÍVEL</h1>
+    </div>
+
+     <footer class="footer">
+  <div class="footer-top">
+    <h1 class="footer-brand">BrainBlaze</h1>
+
+    <div class="footer-socials">
+      <a href="mailto:BrainBlazeshop@gmail.com" class="social-link">
+        <img src="{{ url_for('static', filename='Img/gmail.svg') }}" alt="Email">
+      </a>
+
+      <a href="https://www.tiktok.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/TikTokLogo.svg') }}" alt="TikTok">
+      </a>
+
+      <a href="https://www.instagram.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/InstagramLogo.svg') }}" alt="Instagram">
+      </a>
+
+      <a href="https://www.linkedin.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/LinkedinLogo.svg') }}" alt="LinkedIn">
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-line"></div>
+
+  <div class="footer-content">
+    <div class="footer-column footer-left">
+      <p>Rua Andrade Corvo nº30 1050-009 Lisboa</p>
+      <p class="footer-phone">+351 963 262 639</p>
+      <p>(Custo de chamada local)</p>
+    </div>
+
+    <div class="footer-column footer-center">
+      <a href="{{ url_for('PoliticaPrivacidade') }}" class="footer-link">Política de Privacidade</a>
+      <a href="{{ url_for('LivroReclamacoes') }}" class="footer-link">Livro de reclamações</a>
+      <a href="{{ url_for('TermosEservicos') }}" class="footer-link">Termos e condições</a>
+      <p class="footer-copyright">© 2026 www.brainblaze.pt - All Rights Reserved.</p>
+    </div>
+
+    <div class="footer-column footer-right">
+      <h2>Ser informado sobre nossos produtos</h2>
+
+      <form id="newsletter-form" class="footer-newsletter">
+        <input type="email" id="newsletter-email" placeholder="O seu email..." required>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+  </body>
+</html>

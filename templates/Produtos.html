@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Produtos | BrainBlaze</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body id="BHomepage">
+    
+<header class="header">
+      <a href="/">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='Img/Logo.svg')}}" alt="BrainBlaze"/>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <div class="menu-Produtos">
+          <a href="{{ url_for('Produtos')}}" class="menu-link-Produtos">Produtos</a>
+          <div class="produtos-preview-ui">
+            <div class="ScrollPosition">
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Performance mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Energia máxima</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta produtividade</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Foco extremo</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Aprendizado rápido</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Disciplina mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta performance</h1></div>
+                <div class="play">▶</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="{{ url_for('SobreNos')}}">Sobre nós</a>
+        <a href="{{ url_for('Contactos')}}">Contactos</a>
+      </nav>
+
+      <div class="icons">
+        <a href="{{ url_for('Carrinho')}}">
+          <img src="{{ url_for('static', filename='Img/cartshoping.png') }}" class="Shopping" alt="Carrinho"/>
+        </a>
+
+        {% if session.get('user_id') %}
+          <div class="user-dropdown-container">
+            <a href="{{ url_for('Perfil')}}">
+            <img src="{{ url_for('static', filename='Img/Users.png') }}" class="User" alt="Perfil" />
+            </a>
+            <div class="group21-dropdown">
+              <div class="g21-section" style="margin-bottom: 25px;">
+                <div class="g21-title">FAVORITOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="fav-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if global_favoritos %}
+                      {% for fav in global_favoritos %}
+                        <div class="product-favorite-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            {% if fav.imagem_id %}
+                              <img src="/exibir_imagem/{{ fav.imagem_id }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ fav.nome }}">
+                            {% else %}
+                              <img src="{{ url_for('static', filename='Img/Logo.svg') }}" style="width: 50px; height: auto;">
+                            {% endif %}
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ fav.nome }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(fav.preco) }}€
+                          </span>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não tens favoritos.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-section">
+                <div class="g21-title">PRODUTOS COMPRADOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="compras-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if compras %}
+                      {% for compra in compras %}
+                        <div class="product-purchase-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="BrainBlaze" style="width: 50px; height: auto;">
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            Pedido #{{ compra.id }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(compra.total) }}€
+                          </span>
+                          <div style="font-size: 9px; color: #00e673; font-weight: bold; margin-top: 4px; text-transform: uppercase;">
+                            ✓ {{ compra.estado }}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não efetuaste nenhuma compra.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-footer" style="margin-top: 15px;">
+                <a href="/Logout" class="g21-btn-sair">Sair</a>
+              </div>
+            </div>
+
+            <script>
+            function scrollCarrossel(idGrupo, direcao) {
+              const container = document.getElementById(idGrupo);
+              const valorScroll = 175; 
+              container.scrollLeft += (direcao * valorScroll);
+            }
+            </script>
+
+        {% else %}
+          <a href="{{ url_for('Login')}}">
+            <img src="{{ url_for('static', filename='Img/addWhite.png') }}" class="User" alt="Login" />
+          </a>
+        {% endif %}
+      </div>
+</header>
+
+    <div class="products-page-container">
+      
+      <aside class="products-sidebar">
+        <div class="sidebar-logo-box">
+          <img src="{{ url_for('static', filename='Img/Logo.svg')}}" alt="BrainBlaze Mini" />
+        </div>
+        
+        <div class="filter-section">
+          <h3>Tipo</h3>
+          <div class="filter-line-separator"></div>
+
+          {% for id, nome in categorias.items() %}
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-categoria" value="{{ id }}">
+            <span class="radio-checkmark"></span>
+            {{ nome }}
+          </label>
+          {% endfor %}
+          
+          <div class="filter-line-separator"></div>
+        </div>
+
+        <div class="filter-section">
+          <h3>Desconto direto</h3>
+          <div class="filter-line-separator"></div>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-desconto" checked>
+            <span class="radio-checkmark"></span>
+            Até 20%
+          </label>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-desconto">
+            <span class="radio-checkmark"></span>
+            De 20% a 30%
+          </label>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-desconto">
+            <span class="radio-checkmark"></span>
+            De 30% a 50%
+          </label>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-desconto">
+            <span class="radio-checkmark"></span>
+            Superior a 50% 
+          </label>
+          <div class="filter-line-separator"></div>
+        </div>
+
+        <div class="filter-section">
+          <h3>Preço</h3>
+          <div class="filter-line-separator"></div>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-preco" checked>
+            <span class="radio-checkmark"></span>
+            €0 - €30
+          </label>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-preco">
+            <span class="radio-checkmark"></span>
+            €30 - €150
+          </label>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-preco">
+            <span class="radio-checkmark"></span>
+            €150 - €300
+          </label>
+          
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-preco">
+            <span class="radio-checkmark"></span>
+            €300 - €400
+          </label>
+
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-preco">
+            <span class="radio-checkmark"></span>
+            €400 - €500
+          </label>
+
+          <label class="filter-radio-container">
+            <input type="checkbox" name="filtro-preco">
+            <span class="radio-checkmark"></span>
+            Mais de €500
+          </label>
+          
+          <div class="filter-line-separator"></div>
+        </div>
+      </aside>
+
+      <main class="products-main-content">
+
+        <div class="products-top-bar">
+          <div class="sort-dropdown-container">
+            <select class="sort-select">
+              <option value="relevancia">Relevância</option>
+              <option value="preco-crescente">Preço: Baixo para Alto</option>
+              <option value="preco-decrescente">Preço: Alto para Baixo</option>
+            </select>
+            <div class="dropdown-arrow-box">
+              <span class="arrow-down-triangle"></span>
+            </div>
+          </div>
+        </div>
+
+       <div class="products-grid">
+            {% for produto in produtos %}
+            <div class="product-showcase-card" 
+                data-categoria="{{ produto.categoria_id or 0 }}" 
+                data-preco="{{ produto.preco }}" 
+                data-desconto="{{ produto.desconto or 0 }}">
+                
+                <button type="button" class="favorite-btn" data-id="{{ produto.id }}" style="background: none; border: none; font-size: 20px; cursor: pointer; transition: color 0.2s;">☆</button>
+                
+                {% if (produto.desconto or 0) > 0 %}
+                    <div class="discount-badge">-{{ produto.desconto }}%</div>
+                {% endif %}
+                
+                <div class="product-image-placeholder" style="background: none; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                  {% if produto.imagem_id %}
+                    <img src="/exibir_imagem/{{ produto.imagem_id }}" alt="{{ produto.nome }}" style="width: 100%; height: 100%; object-fit: cover;">
+                  {% else %}
+                    <span style="color:#666;">Sem Imagem</span>
+                  {% endif %}
+                </div>
+                
+                <h4 class="product-card-title">{{ produto.nome }}</h4>
+                <p class="product-card-subtitle" style="font-size:12px; height:32px; overflow:hidden;">{{ produto.descricao or 'Suplemento exclusivo BrainBlaze.' }}</p>
+                
+                <div class="product-card-footer">
+                  <form action="/adicionar_carrinho/{{ produto.id }}" method="POST" style="margin:0;">
+                    <button type="submit" class="add-to-cart-btn">Adicionar</button>
+                  </form>
+                  
+                  <div class="price-box">
+                    {% if produto.desconto and produto.desconto > 0 %}
+                        <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 12px; margin-right: 5px;">
+                            {{ "%.2f"|format(produto.preco) }}€
+                        </span>
+                        <span class="current-price" style="color: #ff6b00; font-weight: bold;">
+                            {{ "%.2f"|format(produto.preco * (1 - (produto.desconto / 100))) }}€ *
+                        </span>
+                    {% else %}
+                        <span class="current-price">
+                            {{ "%.2f"|format(produto.preco) }}€ *
+                        </span>
+                    {% endif %}
+                  </div>
+                </div>
+            </div>
+            {% else %}
+            <p style="color: white; grid-column: 1/-1; text-align: center; padding: 40px;">De momento não há produtos disponíveis.</p>
+            {% endfor %}
+        </div>
+
+      </main>
+    </div>
+
+         <footer class="footer">
+  <div class="footer-top">
+    <h1 class="footer-brand">BrainBlaze</h1>
+
+    <div class="footer-socials">
+      <a href="mailto:BrainBlazeshop@gmail.com" class="social-link">
+        <img src="{{ url_for('static', filename='Img/gmail.svg') }}" alt="Email">
+      </a>
+
+      <a href="https://www.tiktok.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/TikTokLogo.svg') }}" alt="TikTok">
+      </a>
+
+      <a href="https://www.instagram.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/InstagramLogo.svg') }}" alt="Instagram">
+      </a>
+
+      <a href="https://www.linkedin.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/LinkedinLogo.svg') }}" alt="LinkedIn">
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-line"></div>
+
+  <div class="footer-content">
+    <div class="footer-column footer-left">
+      <p>Rua Andrade Corvo nº30 1050-009 Lisboa</p>
+      <p class="footer-phone">+351 963 262 639</p>
+      <p>(Custo de chamada local)</p>
+    </div>
+
+    <div class="footer-column footer-center">
+      <a href="{{ url_for('PoliticaPrivacidade') }}" class="footer-link">Política de Privacidade</a>
+      <a href="{{ url_for('LivroReclamacoes') }}" class="footer-link">Livro de reclamações</a>
+      <a href="{{ url_for('TermosEservicos') }}" class="footer-link">Termos e condições</a>
+      <p class="footer-copyright">© 2026 www.brainblaze.pt - All Rights Reserved.</p>
+    </div>
+
+    <div class="footer-column footer-right">
+      <h2>Ser informado sobre nossos produtos</h2>
+
+      <form id="newsletter-form" class="footer-newsletter">
+        <input type="email" id="newsletter-email" placeholder="O seu email..." required>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+
+    const filtrosCategoria = document.querySelectorAll('input[name="filtro-categoria"]');
+    const filtrosDesconto = document.querySelectorAll('input[name="filtro-desconto"]');
+    const filtrosPreco = document.querySelectorAll('input[name="filtro-preco"]');
+    const cards = document.querySelectorAll('.product-showcase-card');
+
+    function filtrar() {
+
+        const catsMarcadas = Array.from(filtrosCategoria).filter(i => i.checked).map(i => i.value.toString());
+        const descsMarcadas = Array.from(filtrosDesconto).filter(i => i.checked);
+        const precosMarcados = Array.from(filtrosPreco).filter(i => i.checked);
+
+        const mostrarTudoCat = catsMarcadas.length === 0 || catsMarcadas.length === filtrosCategoria.length;
+        const mostrarTudoDesc = descsMarcadas.length === 0 || descsMarcadas.length === filtrosDesconto.length;
+        const mostrarTudoPreco = precosMarcados.length === 0 || precosMarcados.length === filtrosPreco.length;
+
+        cards.forEach(card => {
+            const catProd = card.getAttribute('data-categoria');
+            const precoOrig = parseFloat(card.getAttribute('data-preco'));
+            const descProd = parseInt(card.getAttribute('data-desconto')) || 0;
+            const precoFinal = descProd > 0 ? precoOrig * (1 - (descProd / 100)) : precoOrig;
+
+            let okCat = mostrarTudoCat || catsMarcadas.includes(catProd);
+
+            let okDesc = mostrarTudoDesc;
+            if (!mostrarTudoDesc) {
+                descsMarcadas.forEach(cb => {
+                    const texto = cb.parentElement.textContent.toLowerCase();
+                    if (texto.includes("até 20%") && descProd > 0 && descProd <= 20) okDesc = true;
+                    if (texto.includes("20% a 30%") && descProd > 20 && descProd <= 30) okDesc = true;
+                    if (texto.includes("30% a 50%") && descProd > 30 && descProd <= 50) okDesc = true;
+                    if (texto.includes("superior a 50%") && descProd > 50) okDesc = true;
+                });
+            }
+
+            let okPreco = mostrarTudoPreco;
+            if (!mostrarTudoPreco) {
+                precosMarcados.forEach(cb => {
+                    const texto = cb.parentElement.textContent.toLowerCase();
+                    if (texto.includes("0 - €30") && precoFinal <= 30) okPreco = true;
+                    if (texto.includes("30 - €150") && precoFinal > 30 && precoFinal <= 150) okPreco = true;
+                    if (texto.includes("150 - €300") && precoFinal > 150 && precoFinal <= 300) okPreco = true;
+                    if (texto.includes("300 - €400") && precoFinal > 300 && precoFinal <= 400) okPreco = true;
+                    if (texto.includes("400 - €500") && precoFinal > 400 && precoFinal <= 500) okPreco = true;
+                    if (texto.includes("mais de €500") && precoFinal > 500) okPreco = true;
+                });
+            }
+
+            if (okCat && okDesc && okPreco) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    const todosInputs = document.querySelectorAll('.products-sidebar input[type="checkbox"]');
+    todosInputs.forEach(input => {
+        input.addEventListener('change', filtrar);
+    });
+
+    filtrar();
+});
+
+document.querySelectorAll('.favorite-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const prodId = this.getAttribute('data-id');
+        
+        fetch(`/toggle_favorito/${prodId}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'added') {
+                this.textContent = '★';
+                this.style.color = '#FF9D00';
+            } else if (data.status === 'removed') {
+                this.textContent = '☆';
+                this.style.color = '#FFFFFF';
+            } else {
+                window.location.href = '/Login';
+            }
+        });
+    });
+});
+        </script>
+  </body>
+</html>

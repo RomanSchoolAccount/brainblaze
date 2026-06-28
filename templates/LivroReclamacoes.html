@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Livro de Reclamações | BrainBlaze</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="complaints-page">
+        <header class="header">
+      <a href="/">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='Img/Logo.svg')}}" alt="BrainBlaze"/>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <div class="menu-Produtos">
+          <a href="{{ url_for('Produtos')}}" class="menu-link-Produtos">Produtos</a>
+          <div class="produtos-preview-ui">
+            <div class="ScrollPosition">
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Performance mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Energia máxima</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta produtividade</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Foco extremo</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Aprendizado rápido</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Disciplina mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta performance</h1></div>
+                <div class="play">▶</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="{{ url_for('SobreNos')}}">Sobre nós</a>
+        <a href="{{ url_for('Contactos')}}">Contactos</a>
+      </nav>
+
+      <div class="icons">
+        <a href="{{ url_for('Carrinho')}}">
+          <img src="{{ url_for('static', filename='Img/cartshoping.png') }}" class="Shopping" alt="Carrinho"/>
+        </a>
+
+        {% if session.get('user_id') %}
+          <div class="user-dropdown-container">
+            <a href="{{ url_for('Perfil')}}">
+            <img src="{{ url_for('static', filename='Img/Users.png') }}" class="User" alt="Perfil" />
+            </a>
+            <div class="group21-dropdown">
+              <div class="g21-section" style="margin-bottom: 25px;">
+                <div class="g21-title">FAVORITOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="fav-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if global_favoritos %}
+                      {% for fav in global_favoritos %}
+                        <div class="product-favorite-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            {% if fav.imagem_id %}
+                              <img src="/exibir_imagem/{{ fav.imagem_id }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ fav.nome }}">
+                            {% else %}
+                              <img src="{{ url_for('static', filename='Img/Logo.svg') }}" style="width: 50px; height: auto;">
+                            {% endif %}
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ fav.nome }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(fav.preco) }}€
+                          </span>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não tens favoritos.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-section">
+                <div class="g21-title">PRODUTOS COMPRADOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="compras-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if compras %}
+                      {% for compra in compras %}
+                        <div class="product-purchase-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="BrainBlaze" style="width: 50px; height: auto;">
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            Pedido #{{ compra.id }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(compra.total) }}€
+                          </span>
+                          <div style="font-size: 9px; color: #00e673; font-weight: bold; margin-top: 4px; text-transform: uppercase;">
+                            ✓ {{ compra.estado }}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não efetuaste nenhuma compra.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-footer" style="margin-top: 15px;">
+                <a href="/Logout" class="g21-btn-sair">Sair</a>
+              </div>
+            </div>
+
+            <script>
+            function scrollCarrossel(idGrupo, direcao) {
+              const container = document.getElementById(idGrupo);
+              const valorScroll = 175; 
+              container.scrollLeft += (direcao * valorScroll);
+            }
+            </script>
+
+        {% else %}
+          <a href="{{ url_for('Login')}}">
+            <img src="{{ url_for('static', filename='Img/addWhite.png') }}" class="User" alt="Login" />
+          </a>
+        {% endif %}
+      </div>
+</header>
+
+    <main class="complaints-container">
+      <section class="complaints-card">
+        <h2>1. Informação ao consumidor</h2>
+        <p>
+          A BrainBlaze disponibiliza este espaço para encaminhamento de reclamações,
+          em conformidade com o dever de disponibilização do Livro de Reclamações.
+        </p>
+      </section>
+
+      <section class="complaints-card">
+        <h2>2. Como reclamar</h2>
+        <p>
+          Se pretendes apresentar uma reclamação, podes fazê-lo através da plataforma oficial
+          do Livro de Reclamações Eletrónico ou contactar-nos diretamente pelo email.
+        </p>
+      </section>
+
+      <section class="complaints-card highlight-card">
+        <h2>3. Aceder ao Livro de Reclamações</h2>
+        <p>
+          O formulário oficial encontra-se na plataforma nacional de reclamações.
+        </p>
+
+        <a href="https://www.livroreclamacoes.pt" target="_blank" class="complaints-btn">
+          Abrir Livro de Reclamações
+        </a>
+      </section>
+
+      <section class="complaints-card">
+        <h2>4. Contactos</h2>
+        <p>Email: <a href="mailto:BrainBlazeshop@gmail.com">BrainBlazeshop@gmail.com</a></p>
+        <p>Telefone: +351 963 262 639</p>
+      </section>
+
+      <section class="complaints-card">
+        <h2>5. Entidade competente</h2>
+        <p>
+          A entidade competente pode variar consoante a atividade e o tipo de reclamação.
+          No caso de muitos estabelecimentos, a ASAE é a entidade de referência.
+        </p>
+      </section>
+    </main>
+
+     <footer class="footer">
+  <div class="footer-top">
+    <h1 class="footer-brand">BrainBlaze</h1>
+
+    <div class="footer-socials">
+      <a href="mailto:BrainBlazeshop@gmail.com" class="social-link">
+        <img src="{{ url_for('static', filename='Img/gmail.svg') }}" alt="Email">
+      </a>
+
+      <a href="https://www.tiktok.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/TikTokLogo.svg') }}" alt="TikTok">
+      </a>
+
+      <a href="https://www.instagram.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/InstagramLogo.svg') }}" alt="Instagram">
+      </a>
+
+      <a href="https://www.linkedin.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/LinkedinLogo.svg') }}" alt="LinkedIn">
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-line"></div>
+
+  <div class="footer-content">
+    <div class="footer-column footer-left">
+      <p>Rua Andrade Corvo nº30 1050-009 Lisboa</p>
+      <p class="footer-phone">+351 963 262 639</p>
+      <p>(Custo de chamada local)</p>
+    </div>
+
+    <div class="footer-column footer-center">
+      <a href="{{ url_for('PoliticaPrivacidade') }}" class="footer-link">Política de Privacidade</a>
+      <a href="{{ url_for('LivroReclamacoes') }}" class="footer-link">Livro de reclamações</a>
+      <a href="{{ url_for('TermosEservicos') }}" class="footer-link">Termos e condições</a>
+      <p class="footer-copyright">© 2026 www.brainblaze.pt - All Rights Reserved.</p>
+    </div>
+
+    <div class="footer-column footer-right">
+      <h2>Ser informado sobre nossos produtos</h2>
+
+      <form id="newsletter-form" class="footer-newsletter">
+        <input type="email" id="newsletter-email" placeholder="O seu email..." required>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

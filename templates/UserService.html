@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>BrainBlaze - Perfil</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Archivo Black", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #111111;
+      color: #FFFFFF;
+    }
+
+    .profile-layout {
+      display: flex;
+      max-width: 1280px;
+      width: 100%;
+      margin: 140px auto 60px auto;
+      gap: 25px;
+      padding: 0 20px;
+    }
+
+    .profile-sidebar {
+      width: 300px;
+      background: #111111;
+      border: 4px solid #1C1C1C;
+      border-radius: 12px;
+      padding: 8px;
+      height: fit-content;
+    }
+
+    .sidebar-inner {
+      background: #0D0D0D;
+      border: 6px solid #000000;
+      border-radius: 8px;
+      padding: 25px 12px;
+    }
+
+    .user-welcome {
+      font-size: 18px;
+      color: #FFFFFF;
+      text-align: center;
+      margin-bottom: 30px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .user-welcome span {
+      color: #FF9D00;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 12px;
+      background: #0D0D0D;
+      border: 3px solid #1C1C1C;
+      border-radius: 6px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: #1C1C1C;
+      border-color: #262626;
+      color: #FF9D00;
+    }
+
+    .profile-main-panel {
+      flex: 1;
+      background: #111111;
+      border: 4px solid #1C1C1C;
+      border-radius: 12px;
+      padding: 8px;
+    }
+
+    .panel-inner {
+      background: #0D0D0D;
+      border: 6px solid #000000;
+      border-radius: 8px;
+      padding: 35px;
+      position: relative;
+      min-height: 600px;
+    }
+
+    .carousel-section {
+      background: #161616;
+      border: 3px solid #1C1C1C;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 35px;
+    }
+
+    .carousel-section h2 {
+      font-size: 16px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #FF9D00;
+      padding-bottom: 8px;
+    }
+
+    .carousel-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .arrow-btn {
+      background: none;
+      border: none;
+      color: #FFFFFF;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      transition: color 0.2s;
+    }
+
+    .arrow-btn:hover {
+      color: #FF9D00;
+    }
+
+    .cards-container {
+      display: flex;
+      gap: 20px;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      width: 100%;
+      padding: 10px 0;
+    }
+
+    .cards-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .product-profile-card {
+      width: 140px;
+      background: #0d0d0d;
+      border: 3px solid #262626;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      flex-shrink: 0;
+      text-decoration: none;
+      color: white;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .product-profile-card:hover {
+      transform: scale(1.05);
+      border-color: #FF9D00;
+    }
+
+    .img-box {
+      width: 100%;
+      height: 120px;
+      background: #1a1a1a;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .mini-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .logout-footer-box {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 40px;
+    }
+
+    .btn-sair-3d {
+      background: #D9D9D9;
+      border: 3px solid #262626;
+      border-radius: 6px;
+      color: #000000;
+      font-size: 14px;
+      font-family: "Archivo Black", sans-serif;
+      padding: 6px 40px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .btn-sair-3d:hover {
+      background: #FF4A4A;
+      border-color: #FFFFFF;
+      color: #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+      <a href="/">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='Img/Logo.svg')}}" alt="BrainBlaze"/>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <div class="menu-Produtos">
+          <a href="{{ url_for('Produtos')}}" class="menu-link-Produtos">Produtos</a>
+          <div class="produtos-preview-ui">
+            <div class="ScrollPosition">
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Performance mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Energia máxima</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta produtividade</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Foco extremo</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Aprendizado rápido</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Disciplina mental</h1></div>
+                <div class="play">▶</div>
+              </a>
+              <a href="{{ url_for('Produtos')}}" class="produto-item">
+                <div class="produto-info"><div class="icone"></div><h1>Alta performance</h1></div>
+                <div class="play">▶</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="{{ url_for('SobreNos')}}">Sobre nós</a>
+        <a href="{{ url_for('Contactos')}}">Contactos</a>
+      </nav>
+
+      <div class="icons">
+        <a href="{{ url_for('Carrinho')}}">
+          <img src="{{ url_for('static', filename='Img/cartshoping.png') }}" class="Shopping" alt="Carrinho"/>
+        </a>
+
+        {% if session.get('user_id') %}
+          <div class="user-dropdown-container">
+            <a href="{{ url_for('Perfil')}}">
+            <img src="{{ url_for('static', filename='Img/Users.png') }}" class="User" alt="Perfil" />
+            </a>
+            <div class="group21-dropdown">
+              <div class="g21-section" style="margin-bottom: 25px;">
+                <div class="g21-title">FAVORITOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="fav-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if global_favoritos %}
+                      {% for fav in global_favoritos %}
+                        <div class="product-favorite-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            {% if fav.imagem_id %}
+                              <img src="/exibir_imagem/{{ fav.imagem_id }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ fav.nome }}">
+                            {% else %}
+                              <img src="{{ url_for('static', filename='Img/Logo.svg') }}" style="width: 50px; height: auto;">
+                            {% endif %}
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ fav.nome }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(fav.preco) }}€
+                          </span>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não tens favoritos.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('fav-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-section">
+                <div class="g21-title">PRODUTOS COMPRADOS</div>
+                <div class="g21-carousel" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                  
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', -1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">←</span>
+                  
+                  <div id="compras-group" class="g21-cards-group" style="display: flex; gap: 15px; overflow: hidden; max-width: 510px; width: 100%; padding: 10px 0; scroll-behavior: smooth;">
+                    {% if compras %}
+                      {% for compra in compras %}
+                        <div class="product-purchase-card" style="background: #262626; border: 2px solid #333; border-radius: 12px; padding: 15px; width: 160px; text-align: center; flex-shrink: 0; box-sizing: border-box;">
+                          <div style="width: 100%; height: 110px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='Img/Logo.svg') }}" alt="BrainBlaze" style="width: 50px; height: auto;">
+                          </div>
+                          <h4 style="font-family: 'Archivo Black', sans-serif; font-size: 11px; color: #ffffff; text-transform: uppercase; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            Pedido #{{ compra.id }}
+                          </h4>
+                          <span style="color: #FF9D00; font-family: 'Archivo Black', sans-serif; font-size: 12px; font-weight: bold;">
+                            {{ "%.2f"|format(compra.total) }}€
+                          </span>
+                          <div style="font-size: 9px; color: #00e673; font-weight: bold; margin-top: 4px; text-transform: uppercase;">
+                            ✓ {{ compra.estado }}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p class="g21-empty-text" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #777; margin: 20px auto; text-align: center; width: 100%;">
+                        Ainda não efetuaste nenhuma compra.
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <span class="g21-arrow" onclick="scrollCarrossel('compras-group', 1)" style="cursor: pointer; user-select: none; font-weight: bold; padding: 0 5px; color: #ffffff;">➔</span>
+                </div>
+              </div>
+
+              <div class="g21-footer" style="margin-top: 15px;">
+                <a href="/Logout" class="g21-btn-sair">Sair</a>
+              </div>
+            </div>
+
+            <script>
+            function scrollCarrossel(idGrupo, direcao) {
+              const container = document.getElementById(idGrupo);
+              const valorScroll = 175; 
+              container.scrollLeft += (direcao * valorScroll);
+            }
+            </script>
+
+        {% else %}
+          <a href="{{ url_for('Login')}}">
+            <img src="{{ url_for('static', filename='Img/addWhite.png') }}" class="User" alt="Login" />
+          </a>
+        {% endif %}
+      </div>
+</header>
+
+<div class="profile-layout">
+    
+    <aside class="profile-sidebar">
+      <div class="sidebar-inner">
+        <div class="user-welcome">Olá, <span>{{ username }}</span></div>
+        <nav class="sidebar-nav">
+          <a href="{{ url_for('Perfil') }}" class="nav-btn active"><span>Compras</span> <span>➔</span></a>
+          <a href="#" class="nav-btn"><span>Configurações (soon) </span> <span>➔</span></a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="profile-main-panel">
+      <div class="panel-inner">
+        
+        <section class="carousel-section">
+          <h2>Favoritos</h2>
+          <div class="carousel-wrapper">
+            <button class="arrow-btn" onclick="document.getElementById('fav-container').scrollLeft -= 160">←</button>
+            <div class="cards-container" id="fav-container">
+              {% for prod in favoritos %}
+              <a href="{{ url_for('Produtos') }}" class="product-profile-card">
+                <div class="img-box">
+                  <img src="/exibir_imagem/{{ prod.imagem_id }}" alt="{{ prod.nome }}">
+                </div>
+                <div class="mini-title">{{ prod.nome }}</div>
+              </a>
+              {% else %}
+              <p style="color: #444; font-size: 12px; padding: 20px;">Nenhum produto nos teus favoritos.</p>
+              {% endfor %}
+            </div>
+            <button class="arrow-btn" onclick="document.getElementById('fav-container').scrollLeft += 160">→</button>
+          </div>
+        </section>
+
+        <section class="carousel-section">
+          <h2>Produtos Comprados</h2>
+          <div class="carousel-wrapper">
+            <button class="arrow-btn" onclick="document.getElementById('prod-container').scrollLeft -= 160">←</button>
+            <div class="cards-container" id="prod-container">
+              {% for prod in compras %}
+              <a href="{{ url_for('Produtos') }}" class="product-profile-card">
+                <div class="img-box">
+                  <img src="/exibir_imagem/{{ prod.imagem_id }}" alt="{{ prod.nome }}">
+                </div>
+                <div class="mini-title">{{ prod.nome }}</div>
+              </a>
+              {% else %}
+              <p style="color: #444; font-size: 12px; padding: 20px;">Ainda não efetuaste nenhuma compra.</p>
+              {% endfor %}
+            </div>
+            <button class="arrow-btn" onclick="document.getElementById('prod-container').scrollLeft += 160">→</button>
+          </div>
+        </section>
+
+        <div class="logout-footer-box">
+          <a href="/Logout"><button class="btn-sair-3d">Sair</button></a>
+        </div>
+
+      </div>
+    </main>
+</div>
+
+     <footer class="footer">
+  <div class="footer-top">
+    <h1 class="footer-brand">BrainBlaze</h1>
+
+    <div class="footer-socials">
+      <a href="mailto:BrainBlazeshop@gmail.com" class="social-link">
+        <img src="{{ url_for('static', filename='Img/gmail.svg') }}" alt="Email">
+      </a>
+
+      <a href="https://www.tiktok.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/TikTokLogo.svg') }}" alt="TikTok">
+      </a>
+
+      <a href="https://www.instagram.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/InstagramLogo.svg') }}" alt="Instagram">
+      </a>
+
+      <a href="https://www.linkedin.com" target="_blank" class="social-link">
+        <img src="{{ url_for('static', filename='Img/LinkedinLogo.svg') }}" alt="LinkedIn">
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-line"></div>
+
+  <div class="footer-content">
+    <div class="footer-column footer-left">
+      <p>Rua Andrade Corvo nº30 1050-009 Lisboa</p>
+      <p class="footer-phone">+351 963 262 639</p>
+      <p>(Custo de chamada local)</p>
+    </div>
+
+    <div class="footer-column footer-center">
+      <a href="{{ url_for('PoliticaPrivacidade') }}" class="footer-link">Política de Privacidade</a>
+      <a href="{{ url_for('LivroReclamacoes') }}" class="footer-link">Livro de reclamações</a>
+      <a href="{{ url_for('TermosEservicos') }}" class="footer-link">Termos e condições</a>
+      <p class="footer-copyright">© 2026 www.brainblaze.pt - All Rights Reserved.</p>
+    </div>
+
+    <div class="footer-column footer-right">
+      <h2>Ser informado sobre nossos produtos</h2>
+
+      <form id="newsletter-form" class="footer-newsletter">
+        <input type="email" id="newsletter-email" placeholder="O seu email..." required>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function scrollMenu(id, amount) {
+    document.getElementById(id).scrollLeft += amount;
+  }
+</script>
+
+</body>
+</html>
